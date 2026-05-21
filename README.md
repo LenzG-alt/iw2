@@ -42,7 +42,7 @@ El sistema permite:
 | SimpleJWT | 5.5.1 | Autenticación JWT |
 | django-cors-headers | 4.7+ | CORS para el frontend |
 | SQLite | — | Base de datos local |
-| PostgreSQL | 12+ | Base de datos de producción (`Back/db/`) |
+| PostgreSQL | 12+ | Base de datos de producción (`backend/db/`) |
 | HTML / CSS / JS | — | Frontend estático (consumo de la API) |
 | django-extensions | 4.1 | Diagrama ER |
 | Git / GitHub | — | Control de versiones |
@@ -55,7 +55,7 @@ El sistema permite:
 SGCP/
 ├── README.md
 ├── requirements.txt              # Dependencias del proyecto
-├── Back/
+├── backend/
 │   └── MyDjangoProyect/
 │       ├── manage.py
 │       ├── db.sqlite3            # Base de datos local (desarrollo)
@@ -80,7 +80,7 @@ SGCP/
 │                   ├── servicio.py
 │                   ├── cita.py
 │                   └── horario_estilista.py
-├── Front/
+├── frontend/
 │   ├── index.html                # Pantalla de login
 │   ├── dashboard.html            # Dashboard principal (CRUD por sección)
 │   ├── css/
@@ -89,7 +89,7 @@ SGCP/
 │       ├── auth.js               # Manejo de tokens JWT (localStorage)
 │       ├── api.js                # Cliente HTTP con refresco automático
 │       └── app.js                # Lógica del dashboard (tabs, tablas, modales)
-└── Informes/
+└── informes/
     └── informe.tex               # Informe técnico en LaTeX
 ```
 
@@ -125,7 +125,7 @@ Todos los modelos heredan de `ModeloAuditable`, que incluye: `id`, `status`, `cr
 
 ## Base de Datos PostgreSQL
 
-El directorio `Back/db/` contiene los archivos SQL para producción:
+El directorio `backend/db/` contiene los archivos SQL para producción:
 
 | Archivo | Descripción |
 |---------|-------------|
@@ -140,7 +140,7 @@ El directorio `Back/db/` contiene los archivos SQL para producción:
 psql -U postgres -h localhost -c "CREATE DATABASE sgcpelu;"
 
 # Importar backup
-psql -U postgres -h localhost -d sgcpelu -f Back/db/SGCPelu.sql
+psql -U postgres -h localhost -d sgcpelu -f backend/db/SGCPelu.sql
 
 # Verificar tablas
 psql -U postgres -h localhost -d sgcpelu -c "\dt"
@@ -156,7 +156,7 @@ psql -U postgres -h localhost -d sgcpelu -c "\dt"
 git clone https://github.com/Vsrn12/SGCP.git
 cd SGCP
 
-cd Back/MyDjangoProyect
+cd backend/MyDjangoProyect
 python -m venv venv
 # Windows
 venv\Scripts\Activate.ps1
@@ -251,13 +251,13 @@ Las peticiones sin token retornan `HTTP 401`:
 }
 ```
 
-Las pruebas de la API también están disponibles en [`Front/app.http`](Front/app.http) (compatible con VS Code REST Client).
+Las pruebas de la API también están disponibles en [`frontend/app.http`](frontend/app.http) (compatible con VS Code REST Client).
 
 ---
 
 ## Frontend (HTML/CSS/JS)
 
-El directorio `Front/` contiene un frontend estático que consume la API REST directamente desde el navegador.
+El directorio `fronted/` contiene un frontend estático que consume la API REST directamente desde el navegador.
 
 ### Archivos
 
@@ -274,7 +274,7 @@ El directorio `Front/` contiene un frontend estático que consume la API REST di
 ### Cómo usarlo
 
 1. Inicia el servidor Django (`python manage.py runserver`).
-2. Abre `Front/index.html` en el navegador (doble clic o `Live Server` de VS Code).
+2. Abre `fronted/index.html` en el navegador (doble clic o `Live Server` de VS Code).
 3. Inicia sesión con las credenciales del superusuario.
 4. Navega por los tabs para gestionar peluquerías, estilistas, servicios, usuarios, citas y horarios.
 
@@ -285,7 +285,7 @@ El directorio `Front/` contiene un frontend estático que consume la API REST di
 ## Generar Diagrama Entidad-Relación
 
 ```powershell
-cd Back/MyDjangoProyect
+cd backend/MyDjangoProyect
 python manage.py graph_models SAC -o sac.dot
 dot -Tpng sac.dot -o sac.png
 ```
