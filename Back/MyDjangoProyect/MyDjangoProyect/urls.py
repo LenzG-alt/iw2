@@ -15,9 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from MyWebApps.SAC.views import (
+    CitaViewSet,
+    EstilistaViewSet,
+    HorarioEstilistaViewSet,
+    PeluqueriaViewSet,
+    ServicioViewSet,
+    UsuarioViewSet,
+)
+
+router = DefaultRouter()
+router.register(r'peluquerias', PeluqueriaViewSet, basename='peluqueria')
+router.register(r'usuarios', UsuarioViewSet, basename='usuario')
+router.register(r'estilistas', EstilistaViewSet, basename='estilista')
+router.register(r'servicios', ServicioViewSet, basename='servicio')
+router.register(r'citas', CitaViewSet, basename='cita')
+router.register(r'horarios', HorarioEstilistaViewSet, basename='horario')
 
 urlpatterns = [
-    path('admin/', admin.site.urls)
-
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
