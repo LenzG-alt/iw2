@@ -14,6 +14,7 @@
 | Entregable | URL |
 |------------|-----|
 | Repositorio | https://github.com/Vsrn12/SGCP.git |
+| VIDEO | https://youtu.be/x4tAJMJrFZs |
 | Informe LaTeX | `Informes/informe.tex` |
 
 ---
