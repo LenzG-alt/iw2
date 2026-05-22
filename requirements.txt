@@ -12,3 +12,4 @@ PyJWT==2.12.1
 pyparsing==3.3.2
 sqlparse==0.5.5
 tzdata==2026.2
+gunicorn>=21.2.0  
