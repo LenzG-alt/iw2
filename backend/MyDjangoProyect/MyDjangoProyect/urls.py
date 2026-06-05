@@ -26,6 +26,7 @@ from MyWebApps.SAC.views import (
     PeluqueriaViewSet,
     ServicioViewSet,
     UsuarioViewSet,
+    nested_dashboard_data,
 )
 
 router = DefaultRouter()
@@ -39,6 +40,7 @@ router.register(r'horarios', HorarioEstilistaViewSet, basename='horario')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/data-anidada/', nested_dashboard_data, name='nested-dashboard-data'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
