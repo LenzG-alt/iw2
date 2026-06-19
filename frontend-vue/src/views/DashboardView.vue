@@ -316,7 +316,7 @@ onMounted(cargarDatos)
 
 .content {
   padding: 1.5rem;
-  max-width: 960px;
+  max-width: auto;
 }
 
 .stats {
