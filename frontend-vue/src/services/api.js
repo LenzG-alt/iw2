@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://sgcpbackend-c73k3w2np-lenzg-alts-projects.vercel.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://sgcpbackend.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
   }
