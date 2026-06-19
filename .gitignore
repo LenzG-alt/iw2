@@ -9,4 +9,7 @@ __pycache__/
 *.dot
 *.png
 
-
+# archivos de entorno
+.env
+.env.local
+.env.*.local
