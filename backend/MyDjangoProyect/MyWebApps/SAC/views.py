@@ -1,7 +1,7 @@
 from django.utils.text import slugify
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Peluqueria, Usuario, Estilista, Servicio, Cita, HorarioEstilista
@@ -14,45 +14,47 @@ from .serializers import (
     HorarioEstilistaSerializer,
 )
 
+# NOTA: En desarrollo, todos los endpoints son públicos sin autenticación
+# CAMBIAR A IsAuthenticated EN PRODUCCIÓN
 
 class PeluqueriaViewSet(viewsets.ModelViewSet):
     queryset = Peluqueria.objects.all().order_by('nombre')
     serializer_class = PeluqueriaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all().order_by('nombre')
     serializer_class = UsuarioSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 class EstilistaViewSet(viewsets.ModelViewSet):
     queryset = Estilista.objects.all().order_by('nombre')
     serializer_class = EstilistaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all().order_by('nombre')
     serializer_class = ServicioSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 class CitaViewSet(viewsets.ModelViewSet):
     queryset = Cita.objects.all().order_by('-fecha', 'hora_inicio')
     serializer_class = CitaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 class HorarioEstilistaViewSet(viewsets.ModelViewSet):
     queryset = HorarioEstilista.objects.all().order_by('stylist', 'dia_semana')
     serializer_class = HorarioEstilistaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # DESARROLLO
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])  # DESARROLLO
 def nested_dashboard_data(request):
     estilistas = (
         Estilista.objects.select_related('hair_salon')
