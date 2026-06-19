@@ -264,9 +264,11 @@ Las pruebas de la API también están disponibles en [`frontend/app.http`](front
 
 ---
 
-## Frontend (HTML/CSS/JS)
+---
 
-El directorio `fronted/` contiene un frontend estático que consume la API REST directamente desde el navegador.
+## Frontend Estático (HTML/CSS/JS)
+
+El directorio `frontend/` contiene un frontend estático alternativo que consume la API REST directamente desde el navegador.
 
 ### Archivos
 
@@ -283,7 +285,7 @@ El directorio `fronted/` contiene un frontend estático que consume la API REST 
 ### Cómo usarlo
 
 1. Inicia el servidor Django (`python manage.py runserver`).
-2. Abre `fronted/index.html` en el navegador (doble clic o `Live Server` de VS Code).
+2. Abre `frontend/index.html` en el navegador (doble clic o `Live Server` de VS Code).
 3. Inicia sesión con las credenciales del superusuario.
 4. Navega por los tabs para gestionar peluquerías, estilistas, servicios, usuarios, citas y horarios.
 

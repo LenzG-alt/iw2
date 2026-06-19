@@ -11,19 +11,16 @@ const api = axios.create({
 // Se ejecuta antes de enviar cada request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token')
+    // En desarrollo, no requiere autenticación
+    // Los endpoints son públicos (AllowAny)
     
-    // --- AGREGA ESTE LOG PARA DEPURAR ---
-    console.log("Interceptor: Enviando petición a", config.url);
-    console.log("Interceptor: Token encontrado:", token ? "SÍ" : "NO");
+    // Si necesitas agregar token más adelante, descomenta:
+    // const token = localStorage.getItem('auth_token')
+    // if (token) {
+    //   config.headers.Authorization = `Bearer ${token}`
+    // }
     
-    if (token) {
-      // PRUEBA 1: Intenta con 'Token' (Estándar DRF)
-      config.headers.Authorization = `Bearer ${token}`
-      
-      // PRUEBA 2: Si la prueba 1 falla, cambia la línea de arriba por:
-      // config.headers.Authorization = `Bearer ${token}`
-    }
+    console.log("Enviando petición a:", config.url);
     return config
   },
   (error) => {
@@ -33,14 +30,14 @@ api.interceptors.request.use(
 
 
 // INTERCEPTOR DE RESPUESTA
-// Para manejar errores globales (ej. token expirado 401)
+// Para manejar errores globales
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
       // Token inválido, limpiar y redirigir
       localStorage.removeItem('auth_token')
-      window.location.href = '/login'
+      // window.location.href = '/login'
     }
     return Promise.reject(error)
   }
