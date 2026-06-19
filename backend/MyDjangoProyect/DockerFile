@@ -20,4 +20,4 @@ EXPOSE 8000
 
 # El comando que arranca tu backend. 
 # Fíjate que usamos Gunicorn y la ruta a tu wsgi.py
-CMD ["gunicorn", "MyDjangoProyect.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
