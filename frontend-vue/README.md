@@ -7,7 +7,7 @@ El directorio `frontend-vue/` contiene un frontend moderno construido con **Vue 
 ## Autores
 
 | Autor | Porcentaje |
-|-------------------|
+|---------|----------|
 | Davis Arapa Chua  | 100 % |
 | Sebastian Castro Mamani | 100 % |
 | Piero Delgado Chipana | 100 % |
