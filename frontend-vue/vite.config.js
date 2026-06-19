@@ -19,7 +19,7 @@ export default defineConfig({
     // Esto hace que las llamadas a /api/ vayan a tu Django en el 8000
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'https://sgcpbackend-c73k3w2np-lenzg-alts-projects.vercel.app',
         changeOrigin: true
       }
     }
