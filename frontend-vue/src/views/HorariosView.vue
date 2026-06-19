@@ -1,44 +1,43 @@
 <template>
-  <div class="container">
-    <h1>⏰ Horarios de Estilistas</h1>
-    
-    <div v-if="loading" class="loading">Cargando horarios...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else>
-      <button @click="loadHorarios" class="btn-refresh">🔄 Actualizar</button>
-      
-      <table v-if="horarios.length > 0" class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Estilista</th>
-            <th>Día de Semana</th>
-            <th>Hora Inicio</th>
-            <th>Hora Fin</th>
-            <th>Activo</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="h in horarios" :key="h.id">
-            <td>{{ h.id }}</td>
-            <td>{{ h.stylist?.nombre || h.stylist_id }}</td>
-            <td>{{ h.dia_semana }}</td>
-            <td>{{ h.hora_inicio }}</td>
-            <td>{{ h.hora_fin }}</td>
-            <td>
-              <span :class="['active', h.activo ? 'yes' : 'no']">
-                {{ h.activo ? '✓ Activo' : '✗ Inactivo' }}
-              </span>
-            </td>
-            <td>
-              <span :class="['status', h.status]">{{ h.status }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-else class="no-data">No hay horarios disponibles</div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Horarios</h1>
+      <button @click="loadHorarios" class="btn-refresh" :disabled="loading">
+        Actualizar
+      </button>
     </div>
+
+    <div v-if="loading" class="empty-state">Cargando...</div>
+    <div v-else-if="error" class="empty-state error">{{ error }}</div>
+    <div v-else-if="horarios.length === 0" class="empty-state">Sin resultados</div>
+    <table v-else class="table">
+      <thead>
+        <tr>
+          <th>Estilista</th>
+          <th>Día</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Activo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="h in horarios" :key="h.id">
+          <td class="strong">{{ h.stylist?.nombre || '—' }}</td>
+          <td>{{ formatDia(h.dia_semana) }}</td>
+          <td class="mono">{{ formatHora(h.hora_inicio) }}</td>
+          <td class="mono">{{ formatHora(h.hora_fin) }}</td>
+          <td>
+            <span :class="['badge', h.activo ? 'on' : 'off']">
+              {{ h.activo ? 'Sí' : 'No' }}
+            </span>
+          </td>
+          <td>
+            <span :class="['badge', h.status]">{{ h.status === 'A' ? 'Activo' : 'Inactivo' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -50,6 +49,23 @@ const horarios = ref([])
 const loading = ref(false)
 const error = ref(null)
 
+const dias = {
+  lunes: 'Lunes',
+  martes: 'Martes',
+  miercoles: 'Miércoles',
+  jueves: 'Jueves',
+  viernes: 'Viernes',
+  sabado: 'Sábado',
+  domingo: 'Domingo'
+}
+
+const formatDia = (dia) => dias[dia] || dia
+
+const formatHora = (hora) => {
+  if (!hora) return '—'
+  return hora.slice(0, 5)
+}
+
 const loadHorarios = async () => {
   loading.value = true
   error.value = null
@@ -57,122 +73,134 @@ const loadHorarios = async () => {
     const response = await api.get('/horarios/')
     horarios.value = response.data.results || response.data
   } catch (err) {
-    error.value = 'Error al cargar horarios: ' + err.message
+    error.value = 'No se pudieron cargar los horarios'
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  loadHorarios()
-})
+onMounted(loadHorarios)
 </script>
 
 <style scoped>
-.container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+.page {
+  padding: 1.5rem;
+  max-width: auto;
+  background: #0c0c0c;
+  min-height: 100vh;
+  color: #ccc;
+  font-family: 'Outfit', system-ui, sans-serif;
 }
 
-h1 {
-  color: #333;
-  border-bottom: 3px solid #00bcd4;
-  padding-bottom: 10px;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.loading, .error, .no-data {
-  padding: 20px;
-  text-align: center;
-  border-radius: 5px;
-}
-
-.loading {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.error {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.no-data {
-  background-color: #f5f5f5;
-  color: #666;
+.page-header h1 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin: 0;
 }
 
 .btn-refresh {
-  padding: 10px 20px;
-  background-color: #00bcd4;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+  background: none;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #888;
+  font-size: 0.8rem;
+  font-family: inherit;
   cursor: pointer;
-  margin-bottom: 20px;
-  font-weight: bold;
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .btn-refresh:hover {
-  background-color: #0097a7;
+  color: #ccc;
+  border-color: #444;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.empty-state.error {
+  color: #b05a5a;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  overflow: hidden;
+  font-size: 0.825rem;
 }
 
-.table thead {
-  background-color: #f5f5f5;
-  font-weight: bold;
-}
-
-.table th, .table td {
-  padding: 12px;
+thead th {
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 0.6rem 0.75rem;
+  color: #777;
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #222;
 }
 
-.table tbody tr:hover {
-  background-color: #fafafa;
+tbody td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #181818;
+  color: #bbb;
 }
 
-.active {
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-weight: bold;
-  font-size: 12px;
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.active.yes {
-  background-color: #c8e6c9;
-  color: #2e7d32;
+.strong {
+  color: #e8e8e8;
+  font-weight: 500;
 }
 
-.active.no {
-  background-color: #ffccbc;
-  color: #d84315;
+.mono {
+  font-variant-numeric: tabular-nums;
 }
 
-.status {
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-weight: bold;
-  font-size: 12px;
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.status.active {
-  background-color: #c8e6c9;
-  color: #2e7d32;
+.badge.on {
+  background: #122218;
+  color: #5fa868;
 }
 
-.status.inactive {
-  background-color: #ffccbc;
-  color: #d84315;
+.badge.off {
+  background: #1a1212;
+  color: #b05a5a;
+}
+
+.badge.active {
+  background: #122218;
+  color: #5fa868;
+}
+
+.badge.inactive {
+  background: #1a1212;
+  color: #b05a5a;
 }
 </style>

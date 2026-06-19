@@ -1,40 +1,39 @@
 <template>
-  <div class="container">
-    <h1>👥 Usuarios</h1>
-    
-    <div v-if="loading" class="loading">Cargando usuarios...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else>
-      <button @click="loadUsuarios" class="btn-refresh">🔄 Actualizar</button>
-      
-      <table v-if="usuarios.length > 0" class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="u in usuarios" :key="u.id">
-            <td>{{ u.id }}</td>
-            <td>{{ u.nombre }}</td>
-            <td>{{ u.email }}</td>
-            <td>{{ u.telefono || 'N/A' }}</td>
-            <td>
-              <span :class="['role', u.rol]">{{ u.rol }}</span>
-            </td>
-            <td>
-              <span :class="['status', u.status]">{{ u.status }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-else class="no-data">No hay usuarios disponibles</div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Usuarios</h1>
+      <button @click="loadUsuarios" class="btn-refresh" :disabled="loading">
+        Actualizar
+      </button>
     </div>
+
+    <div v-if="loading" class="empty-state">Cargando...</div>
+    <div v-else-if="error" class="empty-state error">{{ error }}</div>
+    <div v-else-if="usuarios.length === 0" class="empty-state">Sin resultados</div>
+    <table v-else class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Rol</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="u in usuarios" :key="u.id">
+          <td class="strong">{{ u.nombre }}</td>
+          <td class="mono">{{ u.email }}</td>
+          <td class="mono">{{ u.telefono || '—' }}</td>
+          <td>
+            <span :class="['badge', u.rol]">{{ formatRol(u.rol) }}</span>
+          </td>
+          <td>
+            <span :class="['badge', u.status]">{{ u.status === 'A' ? 'Activa' : 'Inactiva' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -46,6 +45,15 @@ const usuarios = ref([])
 const loading = ref(false)
 const error = ref(null)
 
+const formatRol = (rol) => {
+  const map = {
+    cliente: 'Cliente',
+    administrador: 'Admin',
+    recepcionista: 'Recepción'
+  }
+  return map[rol] || rol
+}
+
 const loadUsuarios = async () => {
   loading.value = true
   error.value = null
@@ -53,127 +61,139 @@ const loadUsuarios = async () => {
     const response = await api.get('/usuarios/')
     usuarios.value = response.data.results || response.data
   } catch (err) {
-    error.value = 'Error al cargar usuarios: ' + err.message
+    error.value = 'No se pudieron cargar los usuarios'
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  loadUsuarios()
-})
+onMounted(loadUsuarios)
 </script>
 
 <style scoped>
-.container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+.page {
+  padding: 1.5rem;
+  max-width: auto;
+  background: #0c0c0c;
+  min-height: 100vh;
+  color: #ccc;
+  font-family: 'Outfit', system-ui, sans-serif;
 }
 
-h1 {
-  color: #333;
-  border-bottom: 3px solid #4caf50;
-  padding-bottom: 10px;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.loading, .error, .no-data {
-  padding: 20px;
-  text-align: center;
-  border-radius: 5px;
-}
-
-.loading {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.error {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.no-data {
-  background-color: #f5f5f5;
-  color: #666;
+.page-header h1 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin: 0;
 }
 
 .btn-refresh {
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+  background: none;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #888;
+  font-size: 0.8rem;
+  font-family: inherit;
   cursor: pointer;
-  margin-bottom: 20px;
-  font-weight: bold;
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .btn-refresh:hover {
-  background-color: #45a049;
+  color: #ccc;
+  border-color: #444;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.empty-state.error {
+  color: #b05a5a;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  overflow: hidden;
+  font-size: 0.825rem;
 }
 
-.table thead {
-  background-color: #f5f5f5;
-  font-weight: bold;
-}
-
-.table th, .table td {
-  padding: 12px;
+thead th {
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 0.6rem 0.75rem;
+  color: #777;
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #222;
 }
 
-.table tbody tr:hover {
-  background-color: #fafafa;
+tbody td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #181818;
+  color: #bbb;
 }
 
-.role {
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-weight: bold;
-  font-size: 12px;
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.role.cliente {
-  background-color: #bbdefb;
-  color: #0d47a1;
+.strong {
+  color: #e8e8e8;
+  font-weight: 500;
 }
 
-.role.administrador {
-  background-color: #ffccbc;
-  color: #bf360c;
+.mono {
+  font-variant-numeric: tabular-nums;
 }
 
-.role.recepcionista {
-  background-color: #c8e6c9;
-  color: #1b5e20;
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.status {
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-weight: bold;
-  font-size: 12px;
+.badge.cliente {
+  background: #121820;
+  color: #5a8fbf;
 }
 
-.status.active {
-  background-color: #c8e6c9;
-  color: #2e7d32;
+.badge.administrador {
+  background: #1a1212;
+  color: #b05a5a;
 }
 
-.status.inactive {
-  background-color: #ffccbc;
-  color: #d84315;
+.badge.recepcionista {
+  background: #122218;
+  color: #5fa868;
+}
+
+.badge.active {
+  background: #122218;
+  color: #5fa868;
+}
+
+.badge.inactive {
+  background: #1a1212;
+  color: #b05a5a;
 }
 </style>
