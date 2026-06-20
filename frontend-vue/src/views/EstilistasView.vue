@@ -1,7 +1,10 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h1>Estilistas</h1>
+      <div class="header-left">
+        <button @click="$router.back()" class="btn-back">←</button>
+        <h1>Estilistas</h1>
+      </div>
       <button @click="loadEstilistas" class="btn-refresh" :disabled="loading">
         Actualizar
       </button>
@@ -82,6 +85,34 @@ onMounted(loadEstilistas)
   font-weight: 600;
   color: #e8e8e8;
   margin: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #888;
+  font-size: 1.1rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.btn-back:hover {
+  color: #ccc;
+  border-color: #444;
 }
 
 .btn-refresh {
