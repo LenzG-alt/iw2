@@ -14,10 +14,9 @@
 | Entregable | URL |
 |------------|-----|
 | Repositorio | https://github.com/Vsrn12/SGCP.git |
-| VIDEO | https://youtu.be/x4tAJMJrFZs |
-| VIDEO CON SOAP UI | https://youtu.be/wzdrUl1Fdn8 |
-| Informe LaTeX | `Informes/informe.tex` |
-
+| Frontend | https://sgcp-frontendv2.vercel.app/ |
+| Backend | https://sgcp-proyecto.vercel.app/ |
+| Supabase | https://alcoypflvpcpchhdbfny.supabase.co |
 ---
 
 ## Descripción del Proyecto
